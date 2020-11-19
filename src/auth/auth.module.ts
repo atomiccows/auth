@@ -1,14 +1,14 @@
-import {Module} from '@nestjs/common';
-import {PassportModule} from '@nestjs/passport';
-import {JwtModule} from '@nestjs/jwt';
-import {JwtStrategy} from './jwt.strategy';
+import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './jwt.strategy';
 
-import {UserModule} from '../user/user.module';
-import {AuthService} from './auth.service';
-import {AuthResolver} from './auth.resolver';
-import {User} from '../user/user.model';
-import {MailerModule} from '../mailer/mailer.module';
-import {AuthController} from './auth.controller';
+import { UserModule } from '../user/user.module';
+import { AuthService } from './auth.service';
+import { AuthResolver } from './auth.resolver';
+import { UserType } from '../user/dto/user.dto';
+import { MailerModule } from '../mailer/mailer.module';
+import { AuthController } from './auth.controller';
 
 @Module({
     imports: [
@@ -21,7 +21,7 @@ import {AuthController} from './auth.controller';
         }),
         UserModule,
         MailerModule,
-        User,
+        UserType,
     ],
     controllers: [
         AuthController,

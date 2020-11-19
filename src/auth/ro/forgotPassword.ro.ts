@@ -1,6 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
 
-
 @ObjectType()
 export class ForgotPasswordRo {
     @Field({ nullable: true })

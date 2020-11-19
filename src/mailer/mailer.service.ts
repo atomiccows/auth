@@ -4,7 +4,6 @@ import { Config } from '../config/config';
 
 @Injectable()
 export class MailerService {
-  constructor() {}
 
   async sendEmail(to, subject, text) {
     const { host, port, user, pass, sender, replyEmail } = Config.email;
