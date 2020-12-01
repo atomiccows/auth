@@ -1,29 +1,40 @@
-import { Query, Resolver, Args, Mutation } from '@nestjs/graphql';
+import { Query, Resolver, Args, Mutation, Root } from '@nestjs/graphql';
+import { FieldResolver } from 'type-graphql';
 
-import { User } from './user.model';
+import { UserType } from './dto/user.dto';
 import { UserService } from './user.service';
+import * as bcrypt from 'bcryptjs';
 
-@Resolver(of => User)
+@Resolver(() => UserType)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
   ) {}
 
-  @Query(returns => [User])
-  async findAllUsers(): Promise<User[]> {
+  @Query(() => [UserType])
+  async findAllUsers(): Promise<UserType[]> {
     return await this.userService.findAllUsers();
   }
 
-  @Query(returns => User)
-  async findOneByEmail(@Args('email') email: string): Promise<User> {
+  @Query(() => UserType)
+  async findOneByEmail(@Args('email') email: string): Promise<UserType> {
     return await this.userService.findOneByEmail(email);
   }
 
-  @Mutation(returns => User)
+  @Mutation(() => UserType)
   async create(
     @Args('email') email: string,
     @Args('password') password: string,
     ) {
       return await this.userService.create({email, password});
+  }
+
+  @FieldResolver(() => UserType)
+  async comparePassword(@Root() user: UserType, password: string): Promise<boolean> {
+    try {
+      return await bcrypt.compare(password, user.password);
+    } catch (error) {
+      return error;
+    }
   }
 }

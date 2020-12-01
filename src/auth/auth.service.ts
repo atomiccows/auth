@@ -1,16 +1,16 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {Model} from 'mongoose';
-import {InjectModel} from '@nestjs/mongoose';
-import {JwtService} from '@nestjs/jwt';
-import * as crypto from 'crypto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
+import crypto from 'crypto';
 
-import {User} from '../user/user.model';
-import {UserService} from '../user/user.service';
+import { User } from '../user/interfaces/user.interface';
+import { UserType } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
 import { UserRole } from '../user/user.roles';
-import {ChangePasswordRo, ForgotPasswordRo, LoginUserRo, RegisterUserRo} from './ro';
-import {MailerService} from '../mailer/mailer.service';
-import {RegisterUserDto} from './dto';
-import {Config} from '../config/config';
+import { ChangePasswordRo, ForgotPasswordRo, LoginUserRo, RegisterUserRo } from './ro';
+import { MailerService } from '../mailer/mailer.service';
+import { RegisterUserDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +26,7 @@ export class AuthService {
         loginAttempt: { email: string, password: string },
     ): Promise<LoginUserRo> {
         // This will be used for the initial login
-        let userToAttempt: User;
+        let userToAttempt;
         const {email, password} = loginAttempt;
         if (email) {
             const response = await this.userService.findOneByEmail(email);
@@ -36,10 +36,10 @@ export class AuthService {
         let isMatch = false;
 
         try {
-                isMatch = await userToAttempt.comparePassword(password);
-            } catch (error) {
-                return { error: 'Invalid credentials' };
-            }
+          isMatch = await userToAttempt.comparePassword(password);
+        } catch (error) {
+          return { error: 'Invalid credentials' };
+        }
 
         if (isMatch) {
             // If there is a successful match, generate a JWT for the user
@@ -58,7 +58,7 @@ export class AuthService {
 
     async validateJwtPayload(
         payload,
-    ): Promise<User> {
+    ): Promise<UserType> {
         // This will be used when the user has already logged in and has a JWT
         const {email} = payload;
         return await this.userService.findOneByEmail(email);
@@ -89,7 +89,7 @@ export class AuthService {
             throw new HttpException('Email already in use', HttpStatus.BAD_REQUEST);
         }
 
-        user = await new this.userModel({
+        user = new this.userModel({
             email,
             password,
             role: UserRole.CONSUMER,
@@ -145,7 +145,7 @@ export class AuthService {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND);
         }
         try {
-            const buffer = await crypto.randomBytes(48);
+            const buffer = crypto.randomBytes(48);
             const resetToken = buffer.toString('hex');
             user.resetPasswordToken = resetToken;
             user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
