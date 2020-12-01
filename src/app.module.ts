@@ -20,7 +20,7 @@ import {MailerModule} from './mailer/mailer.module';
             autoSchemaFile: 'schema.gql',
             context: ({req}) => ({request: req}),
         }),
-        MongooseModule.forRoot(process.env.MONGODB_CONNECTION),
+        MongooseModule.forRoot(process.env.MONGODB_CONNECTION, { useNewUrlParser: true }),
     ],
     providers: [],
 })

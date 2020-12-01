@@ -10,7 +10,7 @@ import { UserService } from '../user/user.service';
 import { UserRole } from '../user/user.roles';
 import { ChangePasswordRo, ForgotPasswordRo, LoginUserRo, RegisterUserRo } from './ro';
 import { MailerService } from '../mailer/mailer.service';
-import {RegisterUserDto } from './dto';
+import { RegisterUserDto } from './dto';
 
 @Injectable()
 export class AuthService {

@@ -26,3 +26,5 @@ yarn-error.log*
 
 !.env.example
 .env*
+
+.vimspector.json
